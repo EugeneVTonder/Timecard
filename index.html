@@ -24,10 +24,17 @@
     --radius:10px;
   }
   *{box-sizing:border-box;}
-  body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;padding-bottom:70px;}
+  html,body{height:100%;margin:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
   h1,h2,h3{font-family:'Space Grotesk',sans-serif;margin:0;}
   .mono{font-family:'IBM Plex Mono',monospace;}
-  .app-header{padding:22px 20px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  #appShell{display:flex;flex-direction:column;height:100vh;height:100dvh;}
+  .app-header{
+    flex:0 0 auto;
+    padding:22px 20px 18px;
+    padding-top:calc(env(safe-area-inset-top, 0px) + 6mm);
+    border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;
+  }
   .brand{display:flex;align-items:center;gap:12px;}
   .stamp{width:42px;height:42px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;color:var(--accent);font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:11px;transform:rotate(-8deg);flex-shrink:0;}
   .brand h1{font-size:20px;letter-spacing:0.3px;}
@@ -35,12 +42,16 @@
   .today-chip{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-dim);text-align:right;}
   .today-chip .dow{color:var(--accent);font-weight:600;}
 
-  nav.tabs{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--surface);border-top:1px solid var(--border);z-index:50;}
+  nav.tabs{
+    flex:0 0 auto;
+    display:flex;background:var(--surface);border-top:1px solid var(--border);
+    padding-bottom:env(safe-area-inset-bottom, 0px);
+  }
   nav.tabs button{flex:1;padding:12px 4px 10px;background:none;border:none;color:var(--text-dim);font-family:'Inter',sans-serif;font-size:11px;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;}
   nav.tabs button .ic{font-size:18px;}
   nav.tabs button.active{color:var(--accent);}
 
-  main{max-width:760px;margin:0 auto;padding:20px 16px 30px;}
+  main{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;max-width:760px;margin:0 auto;padding:20px 16px 30px;width:100%;}
 
   .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px;}
   .card-title{font-size:13px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px;}
@@ -153,6 +164,23 @@
 
   .chart-wrap{position:relative;height:220px;margin-top:8px;}
 
+  .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .cal-nav button{background:var(--surface-2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:4px 12px;cursor:pointer;font-size:14px;}
+  .cal-header{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px;font-size:10px;color:var(--text-dim);text-align:center;text-transform:uppercase;}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+  .cal-cell{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:6px;font-size:11px;font-family:'IBM Plex Mono',monospace;cursor:pointer;background:var(--surface-2);color:var(--text-dim);gap:1px;line-height:1;}
+  .cal-cell.cal-blank{visibility:hidden;cursor:default;}
+  .cal-cell .cal-daynum{font-size:11px;}
+  .cal-cell .cal-marker{font-size:10px;}
+  .cal-cell.cal-green{background:#233A34;color:var(--normal);}
+  .cal-cell.cal-red{background:#3E2420;color:#E08479;}
+  .cal-cell.cal-blue{background:#243347;color:#8FB4E0;}
+  .cal-cell.cal-blue .cal-marker{color:#8FB4E0;}
+  .cal-cell.cal-neutral{background:var(--surface-2);color:var(--text-dim);}
+  .cal-cell.cal-future{background:transparent;border:1px dashed var(--border);color:var(--text-dim);cursor:default;}
+  .cal-legend{display:flex;gap:14px;margin-top:12px;font-size:11px;color:var(--text-dim);flex-wrap:wrap;}
+  .cal-legend .dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:middle;}
+
   #printArea{display:none;}
   @media print{
     body *{visibility:hidden;}
@@ -167,22 +195,24 @@
 </head>
 <body>
 
-<div class="app-header">
-  <div class="brand">
-    <div class="stamp">IN/OUT</div>
-    <div><h1>Timecard</h1><div class="sub">work hours &amp; overtime</div></div>
+<div id="appShell">
+  <div class="app-header">
+    <div class="brand">
+      <div class="stamp">IN/OUT</div>
+      <div><h1>Timecard</h1><div class="sub">work hours &amp; overtime</div></div>
+    </div>
+    <div class="today-chip" id="todayChip"></div>
   </div>
-  <div class="today-chip" id="todayChip"></div>
+
+  <main id="main"></main>
+
+  <nav class="tabs" id="tabs">
+    <button data-tab="log"><span class="ic">&#9201;</span>Log</button>
+    <button data-tab="leave"><span class="ic">&#127796;</span>Leave</button>
+    <button data-tab="stats"><span class="ic">&#128202;</span>Stats</button>
+    <button data-tab="settings"><span class="ic">&#9881;</span>Settings</button>
+  </nav>
 </div>
-
-<main id="main"></main>
-
-<nav class="tabs" id="tabs">
-  <button data-tab="log"><span class="ic">&#9201;</span>Log</button>
-  <button data-tab="leave"><span class="ic">&#127796;</span>Leave</button>
-  <button data-tab="stats"><span class="ic">&#128202;</span>Stats</button>
-  <button data-tab="settings"><span class="ic">&#9881;</span>Settings</button>
-</nav>
 
 <div class="modal-overlay" id="modalOverlay"><div class="modal" id="modalContent"></div></div>
 <div id="printArea"></div>
@@ -206,10 +236,15 @@ const DEFAULT_SETTINGS = {
 let state = {
   settings: JSON.parse(JSON.stringify(DEFAULT_SETTINGS)),
   sessions: [],   // {id, date, location, clockIn, clockOut, breaks:[{type,start,end}], notes}
-  leaves: [],
+  leaves: [],     // {id, dateFrom, dateTo, type, comment}
+  dayOverrides: {}, // { 'YYYY-MM-DD': targetMinutes } — overrides the schedule-derived target for that date
   activeSession: null, // {id, date, location, startTs, breaks:[{type,startTs,endTs}], openBreak:{type,startTs}|null}
   activeTab: 'log',
   statsPeriod: 'month',
+  customStart: null,
+  customEnd: null,
+  calYear: null,
+  calMonth: null,
   backupHandle: null,
   backupNeedsReconnect: false
 };
@@ -223,6 +258,7 @@ async function loadAll(){
   try{ const v = localStorage.getItem('tc_sessions'); if(v) state.sessions = JSON.parse(v); }catch(e){}
   try{ const v = localStorage.getItem('tc_leaves'); if(v) state.leaves = JSON.parse(v); }catch(e){}
   try{ const v = localStorage.getItem('tc_activeSession'); if(v) state.activeSession = JSON.parse(v); }catch(e){}
+  try{ const v = localStorage.getItem('tc_dayOverrides'); if(v) state.dayOverrides = JSON.parse(v); }catch(e){}
   if(FS_SUPPORTED){
     try{
       const handle = await loadStoredHandle();
@@ -246,6 +282,7 @@ async function saveActiveSession(){
     else { localStorage.removeItem('tc_activeSession'); }
   }catch(e){ console.error('save active session failed', e); }
 }
+async function saveDayOverrides(){ try{ localStorage.setItem('tc_dayOverrides', JSON.stringify(state.dayOverrides)); }catch(e){ console.error('save overrides failed', e); } triggerBackup(); }
 
 // ================= linked backup file (Chrome/Edge only) =================
 function openHandleDB(){
@@ -322,7 +359,18 @@ async function writeBackupFile(){
     }, null, 2));
     await writable.close();
     state.backupNeedsReconnect = false;
+    markBackedUpNow();
   }catch(e){ console.error('backup write failed', e); }
+}
+function markBackedUpNow(){ try{ localStorage.setItem('tc_lastBackupAt', new Date().toISOString()); }catch(e){} }
+function lastBackupLabel(){
+  let ts;
+  try{ ts = localStorage.getItem('tc_lastBackupAt'); }catch(e){}
+  if(!ts) return {text:'Never backed up', warn:true};
+  const days = Math.floor((Date.now()-new Date(ts).getTime())/86400000);
+  if(days<1) return {text:'Backed up today', warn:false};
+  if(days<7) return {text:`Backed up ${days} day${days!==1?'s':''} ago`, warn:false};
+  return {text:`Last backup was ${days} days ago`, warn:true};
 }
 function triggerBackup(){ if(state.backupHandle) writeBackupFile(); }
 
@@ -364,7 +412,24 @@ function niceDate(dateStr){ return new Date(dateStr+'T00:00:00').toLocaleDateStr
 function monthLabel(dateStr){ return new Date(dateStr+'T00:00:00').toLocaleDateString(undefined,{month:'long',year:'numeric'}); }
 function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
 
+function daysBetweenInclusive(a,b){
+  const d1 = new Date(a+'T00:00:00'), d2 = new Date(b+'T00:00:00');
+  return Math.round((d2-d1)/86400000) + 1;
+}
+function leaveForDate(dateStr){
+  return state.leaves.find(l=> dateStr>=l.dateFrom && dateStr<=l.dateTo) || null;
+}
+// number of days of `leave` that fall within [start,end], inclusive, clipped to the leave's own range
+function leaveDaysClipped(leave, start, end){
+  const from = leave.dateFrom > start ? leave.dateFrom : start;
+  const to = leave.dateTo < end ? leave.dateTo : end;
+  if(from > to) return 0;
+  return daysBetweenInclusive(from, to);
+}
 function targetMinutesFor(dateStr){
+  if(Object.prototype.hasOwnProperty.call(state.dayOverrides, dateStr)){
+    return Math.max(0, state.dayOverrides[dateStr]);
+  }
   const sched = state.settings.schedule[dowKey(dateStr)];
   return (sched && sched.enabled) ? Math.max(0,(toMinutes(sched.end)-toMinutes(sched.start))-(sched.lunchMinutes||0)) : 0;
 }
@@ -445,9 +510,12 @@ function renderLogTab(){
         html += `<div class="card day-card">
           <div class="day-card-head">
             <div class="dtitle">${niceDate(dateStr)}</div>
-            <div class="dtotal">${fmtHours(stats.worked)}h</div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="dtotal">${fmtHours(stats.worked)}h</div>
+              <button type="button" class="icon-btn edit-target-btn" data-date="${dateStr}" title="Edit required hours for this day">&#9998;</button>
+            </div>
           </div>
-          <div style="margin-bottom:8px;">${badge}</div>`;
+          <div style="margin-bottom:8px;">${badge}${Object.prototype.hasOwnProperty.call(state.dayOverrides,dateStr) ? ' <span class="badge under">custom target</span>' : ''}</div>`;
         grouped[dateStr].sort((a,b)=>toMinutes(a.clockIn)-toMinutes(b.clockIn)).forEach(s=>{
           const worked = computeSessionWorked(s);
           const breakBadges = (s.breaks||[]).filter(b=>b.start&&b.end).map(b=>`<span class="badge ${b.type}">${b.type==='lunch'?'lunch':'break'} ${b.start}-${b.end}</span>`).join(' ');
@@ -567,6 +635,38 @@ function clockOut(){
   saveActiveSession();
 }
 
+// ================= day target override modal =================
+function openDayTargetModal(dateStr){
+  const hasOverride = Object.prototype.hasOwnProperty.call(state.dayOverrides, dateStr);
+  const currentTargetMin = targetMinutesFor(dateStr);
+  const currentHours = (currentTargetMin/60).toFixed(2).replace(/\.00$/,'');
+  const html = `
+    <h2>Required hours &mdash; ${niceDate(dateStr)}</h2>
+    <div class="entry-sub" style="margin-bottom:14px;">Overrides the weekly schedule for this one day only. Sessions logged this day are compared against this number instead.</div>
+    <div class="field">
+      <label>Hours required (0&ndash;24)</label>
+      <input type="number" id="f_targetHours" min="0" max="24" step="0.25" value="${currentHours}">
+    </div>
+    <div class="modal-actions">
+      ${hasOverride? `<button class="btn danger" id="btnResetTarget">Use schedule default</button>`:''}
+      <button class="btn secondary" id="btnCancelModal">Cancel</button>
+      <button class="btn" id="btnSaveTarget">Save</button>
+    </div>`;
+  showModal(html);
+  document.getElementById('btnCancelModal').addEventListener('click', closeModal);
+  document.getElementById('btnSaveTarget').addEventListener('click', ()=>{
+    const hours = parseFloat(document.getElementById('f_targetHours').value);
+    if(isNaN(hours) || hours<0 || hours>24){ alert('Enter a number of hours between 0 and 24.'); return; }
+    state.dayOverrides[dateStr] = Math.round(hours*60);
+    closeModal(); render(); saveDayOverrides();
+  });
+  const resetBtn = document.getElementById('btnResetTarget');
+  if(resetBtn) resetBtn.addEventListener('click', ()=>{
+    delete state.dayOverrides[dateStr];
+    closeModal(); render(); saveDayOverrides();
+  });
+}
+
 // ================= manual session modal =================
 function openSessionModal(sessionId){
   const session = sessionId ? state.sessions.find(s=>s.id===sessionId) : null;
@@ -663,14 +763,18 @@ function deleteSession(id){
 
 // ================= LEAVE TAB =================
 function renderLeaveTab(){
-  const sorted = [...state.leaves].sort((a,b)=> b.date.localeCompare(a.date));
+  const sorted = [...state.leaves].sort((a,b)=> b.dateFrom.localeCompare(a.dateFrom));
   let html = `<button class="btn full" id="btnNewLeave">+ Add Leave</button>`;
   if(sorted.length===0){ html += `<div class="empty">No leave logged yet.</div>`; }
   else {
     html += `<div class="card">`;
     sorted.forEach(l=>{
+      const days = daysBetweenInclusive(l.dateFrom, l.dateTo);
+      const rangeLabel = l.dateFrom===l.dateTo ? niceDate(l.dateFrom) : `${niceDate(l.dateFrom)} &ndash; ${niceDate(l.dateTo)}`;
       html += `<div class="entry-row" data-leave-id="${l.id}">
-        <div><div class="entry-date">${niceDate(l.date)}</div>${l.comment? `<div class="entry-sub">${escapeHtml(l.comment)}</div>`:''}</div>
+        <div><div class="entry-date">${rangeLabel}</div>
+          <div class="entry-sub">${days} day${days!==1?'s':''}${l.comment? ' &middot; '+escapeHtml(l.comment):''}</div>
+        </div>
         <div class="entry-hours"><span class="badge ${l.type}">${l.type==='annual'?'Annual':l.type==='sick'?'Sick':'Other'}</span></div>
       </div>`;
     });
@@ -680,10 +784,13 @@ function renderLeaveTab(){
 }
 function openLeaveModal(leaveId){
   const leave = leaveId ? state.leaves.find(l=>l.id===leaveId) : null;
-  const data = leave || {id:null, date: todayStr(), type:'annual', comment:''};
+  const data = leave || {id:null, dateFrom: todayStr(), dateTo: todayStr(), type:'annual', comment:''};
   const html = `
     <h2>${leave? 'Edit Leave':'Add Leave'}</h2>
-    <div class="field"><label>Date</label><input type="date" id="l_date" value="${data.date}"></div>
+    <div class="two-col">
+      <div class="field"><label>From</label><input type="date" id="l_dateFrom" value="${data.dateFrom}"></div>
+      <div class="field"><label>To</label><input type="date" id="l_dateTo" value="${data.dateTo}"></div>
+    </div>
     <div class="field">
       <label>Type</label>
       <div class="seg" id="l_type_seg">
@@ -711,15 +818,17 @@ function openLeaveModal(leaveId){
   const delBtn = document.getElementById('btnDeleteLeave');
   if(delBtn) delBtn.addEventListener('click', ()=>{ deleteLeave(data.id); closeModal(); });
 }
-async function saveLeaveFromForm(existingId){
-  const date = document.getElementById('l_date').value;
+function saveLeaveFromForm(existingId){
+  const dateFrom = document.getElementById('l_dateFrom').value;
+  const dateTo = document.getElementById('l_dateTo').value;
   const type = document.querySelector('#l_type_seg button.active').dataset.type;
   const comment = document.getElementById('l_comment').value;
-  if(!date){ alert('Date is required.'); return; }
+  if(!dateFrom || !dateTo){ alert('Both dates are required.'); return; }
+  if(dateTo < dateFrom){ alert('"To" date must be on or after "From" date.'); return; }
   if(existingId){
     const idx = state.leaves.findIndex(l=>l.id===existingId);
-    state.leaves[idx] = {...state.leaves[idx], date, type, comment};
-  } else { state.leaves.push({id: uid(), date, type, comment}); }
+    state.leaves[idx] = {...state.leaves[idx], dateFrom, dateTo, type, comment};
+  } else { state.leaves.push({id: uid(), dateFrom, dateTo, type, comment}); }
   closeModal();
   render();
   saveLeaves();
@@ -754,7 +863,7 @@ function renderSettingsTab(){
     </div>
     <div class="card" style="margin-top:16px;">
       <div class="card-title">Manual backup</div>
-      <div class="entry-sub" style="margin-bottom:10px;">All data is stored only on this device/browser.</div>
+      <div class="entry-sub" style="margin-bottom:10px;color:${lastBackupLabel().warn?'var(--overtime)':'var(--text-dim)'};">${lastBackupLabel().text}</div>
       <button class="btn secondary full" id="btnExportJson" style="margin-bottom:8px;">Export raw data (JSON backup)</button>
       <button class="btn secondary full" id="btnImportJson">Restore from backup file</button>
       <input type="file" id="importFileInput" accept="application/json" style="display:none;">
@@ -802,6 +911,8 @@ function attachSettingsEvents(){
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = 'timecard-backup.json'; a.click();
     URL.revokeObjectURL(url);
+    markBackedUpNow();
+    render();
   });
 
   const importBtn = document.getElementById('btnImportJson');
@@ -826,7 +937,11 @@ function attachSettingsEvents(){
 function periodRange(period){
   const now = new Date();
   let start, end;
-  if(period==='week'){
+  if(period==='today'){
+    return { start: todayStr(), end: todayStr() };
+  } else if(period==='custom'){
+    return { start: state.customStart || todayStr(), end: state.customEnd || todayStr() };
+  } else if(period==='week'){
     const day = now.getDay(); const diffToMon = (day===0? -6 : 1-day);
     start = new Date(now); start.setDate(now.getDate()+diffToMon);
     end = new Date(start); end.setDate(start.getDate()+6);
@@ -838,11 +953,77 @@ function periodRange(period){
   }
   return {start: isoDate(start), end: isoDate(end)};
 }
+function ensureCalendarDefaults(){
+  if(state.calYear===null){ const d=new Date(); state.calYear=d.getFullYear(); state.calMonth=d.getMonth(); }
+}
+function calendarDayColor(dateStr){
+  if(leaveForDate(dateStr)) return 'blue';
+  if(dateStr > todayStr()) return 'future';
+  const stats = dayStats(dateStr);
+  if(stats.target<=0) return stats.worked>0 ? 'green' : 'neutral';
+  if(stats.undertime < 5) return 'green';
+  return 'red';
+}
+function renderCalendarSection(){
+  ensureCalendarDefaults();
+  const year = state.calYear, month = state.calMonth;
+  const firstOfMonth = new Date(year, month, 1);
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const startOffset = firstOfMonth.getDay();
+  const monthName = firstOfMonth.toLocaleDateString(undefined,{month:'long',year:'numeric'});
+  let cells = '';
+  for(let i=0;i<startOffset;i++) cells += `<div class="cal-cell cal-blank"></div>`;
+  for(let day=1; day<=daysInMonth; day++){
+    const dateStr = `${year}-${(month+1).toString().padStart(2,'0')}-${day.toString().padStart(2,'0')}`;
+    const color = calendarDayColor(dateStr);
+    const leave = leaveForDate(dateStr);
+    let marker = '';
+    if(leave){ marker = leave.type==='sick' ? '&#128137;' : '&times;'; }
+    cells += `<div class="cal-cell cal-${color}" data-cal-date="${dateStr}"><span class="cal-daynum">${day}</span>${marker? `<span class="cal-marker">${marker}</span>`:''}</div>`;
+  }
+  return `
+    <div class="card">
+      <div class="card-title">Calendar overview</div>
+      <div class="cal-nav">
+        <button type="button" id="calPrev">&larr;</button>
+        <div style="font-weight:600;font-size:13px;">${monthName}</div>
+        <button type="button" id="calNext">&rarr;</button>
+      </div>
+      <div class="cal-header">${['Su','Mo','Tu','We','Th','Fr','Sa'].map(d=>`<div>${d}</div>`).join('')}</div>
+      <div class="cal-grid">${cells}</div>
+      <div class="cal-legend">
+        <span><span class="dot" style="background:#233A34;"></span>Met / exceeded</span>
+        <span><span class="dot" style="background:#3E2420;"></span>Shortfall</span>
+        <span><span class="dot" style="background:#243347;"></span>Leave (&times;) / Sick (&#128137;)</span>
+      </div>
+    </div>`;
+}
+function attachCalendarEvents(){
+  const prev = document.getElementById('calPrev');
+  const next = document.getElementById('calNext');
+  if(prev) prev.addEventListener('click', ()=>{
+    state.calMonth--; if(state.calMonth<0){ state.calMonth=11; state.calYear--; }
+    render();
+  });
+  if(next) next.addEventListener('click', ()=>{
+    state.calMonth++; if(state.calMonth>11){ state.calMonth=0; state.calYear++; }
+    render();
+  });
+  document.querySelectorAll('.cal-cell[data-cal-date]').forEach(cell=>{
+    cell.addEventListener('click', ()=>{
+      const dateStr = cell.dataset.calDate;
+      const stats = dayStats(dateStr);
+      const leave = leaveForDate(dateStr);
+      if(leave){ toast(`${niceDate(dateStr)}: ${leave.type} leave`); }
+      else { toast(`${niceDate(dateStr)}: worked ${fmtHours(stats.worked)}h of ${fmtHours(stats.target)}h target`); }
+    });
+  });
+}
 function renderStatsTab(){
   const {start,end} = periodRange(state.statsPeriod);
   const grouped = sessionsByDate();
   const datesInRange = Object.keys(grouped).filter(d=> d>=start && d<=end).sort();
-  const leavesInRange = state.leaves.filter(l=> l.date>=start && l.date<=end);
+  const leavesInRange = state.leaves.filter(l=> l.dateTo>=start && l.dateFrom<=end);
 
   let worked=0, normal=0, overtime=0, undertime=0;
   const byLocation = {Office:0, Remote:0, Site:0};
@@ -851,22 +1032,33 @@ function renderStatsTab(){
     worked+=stats.worked; normal+=stats.normal; overtime+=stats.overtime; undertime+=stats.undertime;
     grouped[d].forEach(s=>{ byLocation[s.location] = (byLocation[s.location]||0) + computeSessionWorked(s); });
   });
-  const annualDays = leavesInRange.filter(l=>l.type==='annual').length;
-  const sickDays = leavesInRange.filter(l=>l.type==='sick').length;
-  const otherDays = leavesInRange.filter(l=>l.type==='other').length;
+  const annualDays = leavesInRange.filter(l=>l.type==='annual').reduce((sum,l)=>sum+leaveDaysClipped(l,start,end),0);
+  const sickDays = leavesInRange.filter(l=>l.type==='sick').reduce((sum,l)=>sum+leaveDaysClipped(l,start,end),0);
+  const otherDays = leavesInRange.filter(l=>l.type==='other').reduce((sum,l)=>sum+leaveDaysClipped(l,start,end),0);
 
   return `
     <div class="period-picker">
+      <button data-period="today" class="${state.statsPeriod==='today'?'active':''}">Today</button>
       <button data-period="week" class="${state.statsPeriod==='week'?'active':''}">This Week</button>
       <button data-period="month" class="${state.statsPeriod==='month'?'active':''}">This Month</button>
       <button data-period="year" class="${state.statsPeriod==='year'?'active':''}">This Year</button>
+      <button data-period="custom" class="${state.statsPeriod==='custom'?'active':''}">Custom</button>
     </div>
+    ${state.statsPeriod==='custom' ? `
+      <div class="card">
+        <div class="two-col">
+          <div class="field"><label>From</label><input type="date" id="customStart" value="${state.customStart||todayStr()}"></div>
+          <div class="field"><label>To</label><input type="date" id="customEnd" value="${state.customEnd||todayStr()}"></div>
+        </div>
+      </div>
+    ` : ''}
     <div class="stat-grid">
       <div class="stat-box"><div class="label">Worked</div><div class="value">${fmtHours(worked)}h</div></div>
       <div class="stat-box"><div class="label">Normal hours</div><div class="value normal">${fmtHours(normal)}h</div></div>
       <div class="stat-box"><div class="label">Overtime</div><div class="value overtime">${fmtHours(overtime)}h</div></div>
       <div class="stat-box"><div class="label">Shortfall</div><div class="value under">${fmtHours(undertime)}h</div></div>
     </div>
+    ${renderCalendarSection()}
     <div class="card"><div class="card-title">Worked vs. normal, overtime</div><div class="chart-wrap"><canvas id="chartBreakdown"></canvas></div></div>
     <div class="card"><div class="card-title">Hours by location</div><div class="chart-wrap" style="height:200px;"><canvas id="chartLocation"></canvas></div></div>
     <div class="card">
@@ -880,6 +1072,7 @@ function renderStatsTab(){
     <button class="btn secondary full" id="btnPrintReport">Print / Export PDF report</button>`;
 }
 function attachStatsCharts(){
+  attachCalendarEvents();
   const {start,end} = periodRange(state.statsPeriod);
   const grouped = sessionsByDate();
   const dates = Object.keys(grouped).filter(d=>d>=start&&d<=end).sort();
@@ -920,7 +1113,7 @@ function attachStatsCharts(){
 function buildAndPrintReport(start,end){
   const grouped = sessionsByDate();
   const dates = Object.keys(grouped).filter(d=>d>=start&&d<=end).sort();
-  const leavesInRange = state.leaves.filter(l=>l.date>=start&&l.date<=end).sort((a,b)=>a.date.localeCompare(b.date));
+  const leavesInRange = state.leaves.filter(l=>l.dateTo>=start&&l.dateFrom<=end).sort((a,b)=>a.dateFrom.localeCompare(b.dateFrom));
   let worked=0, normal=0, overtime=0;
   let rows = dates.map(d=>{
     const stats = dayStats(d, grouped);
@@ -928,7 +1121,10 @@ function buildAndPrintReport(start,end){
     const sessTimes = grouped[d].map(s=>`${s.clockIn}-${s.clockOut}`).join(', ');
     return `<tr><td>${niceDate(d)}</td><td>${sessTimes}</td><td>${fmtHours(stats.worked)}</td><td>${fmtHours(stats.normal)}</td><td>${fmtHours(stats.overtime)}</td></tr>`;
   }).join('');
-  let leaveRows = leavesInRange.map(l=>`<tr><td>${niceDate(l.date)}</td><td>${l.type}</td><td>${escapeHtml(l.comment||'')}</td></tr>`).join('');
+  let leaveRows = leavesInRange.map(l=>{
+    const rangeLabel = l.dateFrom===l.dateTo ? niceDate(l.dateFrom) : `${niceDate(l.dateFrom)} - ${niceDate(l.dateTo)}`;
+    return `<tr><td>${rangeLabel}</td><td>${l.type}</td><td>${escapeHtml(l.comment||'')}</td></tr>`;
+  }).join('');
   document.getElementById('printArea').innerHTML = `
     <h1 style="font-family:sans-serif;">Work Hours Report</h1>
     <p>${niceDate(start)} &ndash; ${niceDate(end)}</p>
@@ -977,6 +1173,9 @@ function attachTabEvents(){
   document.querySelectorAll('.entry-row[data-session-id]').forEach(row=>{
     row.addEventListener('click', ()=> openSessionModal(row.dataset.sessionId));
   });
+  document.querySelectorAll('.edit-target-btn').forEach(btn=>{
+    btn.addEventListener('click', ev=>{ ev.stopPropagation(); openDayTargetModal(btn.dataset.date); });
+  });
 
   const newLeaveBtn = document.getElementById('btnNewLeave');
   if(newLeaveBtn) newLeaveBtn.addEventListener('click', ()=>openLeaveModal(null));
@@ -985,8 +1184,18 @@ function attachTabEvents(){
   });
 
   document.querySelectorAll('.period-picker button').forEach(btn=>{
-    btn.addEventListener('click', ()=>{ state.statsPeriod = btn.dataset.period; render(); });
+    btn.addEventListener('click', ()=>{
+      state.statsPeriod = btn.dataset.period;
+      if(state.statsPeriod==='custom' && !state.customStart){
+        state.customStart = todayStr(); state.customEnd = todayStr();
+      }
+      render();
+    });
   });
+  const customStartInput = document.getElementById('customStart');
+  const customEndInput = document.getElementById('customEnd');
+  if(customStartInput) customStartInput.addEventListener('change', ()=>{ state.customStart = customStartInput.value; render(); });
+  if(customEndInput) customEndInput.addEventListener('change', ()=>{ state.customEnd = customEndInput.value; render(); });
 
   attachSettingsEvents();
 }
