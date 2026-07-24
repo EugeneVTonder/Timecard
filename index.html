@@ -17,7 +17,7 @@
   :root{
     --bg:#1B1E26; --surface:#242832; --surface-2:#2C313D; --border:#3A4150;
     --text:#E9ECF1; --text-dim:#9BA4B5;
-    --accent:#D4A24C; --accent-dim:#8A703A;
+    --accent:#5087C7; --accent-dim:#2F5A82;
     --normal:#5BA88F; --overtime:#D4753F; --under:#7E8AA8;
     --leave:#7C8CC4; --sick:#B4708A; --danger:#C4574F;
     --live:#5BA88F; --pause:#D9B054;
@@ -72,9 +72,11 @@
   .badge.normal{background:#233A34;color:var(--normal);}
   .badge.overtime{background:#3E2E22;color:var(--overtime);}
   .badge.under{background:#292E3D;color:var(--under);}
+  .badge.hoursshort{background:#3E2420;color:#E08479;}
   .badge.annual{background:#292E45;color:var(--leave);}
   .badge.sick{background:#3D2530;color:var(--sick);}
   .badge.lunch{background:#3A3320;color:#D9B054;}
+  .badge.leaveblue{background:#243347;color:#8FB4E0;}
   .badge.break{background:#2A3340;color:#8FAFC7;}
 
   /* ---- stopwatch ---- */
@@ -87,11 +89,27 @@
   .sw-state.paused{color:var(--pause);}
   .sw-timer{font-family:'IBM Plex Mono',monospace;font-size:48px;font-weight:600;letter-spacing:1px;line-height:1;margin:6px 0 4px;}
   .sw-timer.paused{color:var(--pause);}
+
+  .tl-wrap{position:relative;height:36px;background:var(--surface-2);border-radius:6px;overflow:hidden;margin-bottom:4px;}
+  .tl-wrap.tl-compact{height:16px;margin-bottom:10px;}
+  .tl-seg{position:absolute;top:0;bottom:0;}
+  .tl-blue{background:#5087C7;}
+  .tl-green{background:#5BA88F;}
+  .tl-yellow{background:#D9B054;}
+  .tl-grey{background:#6B7280;}
+  .tl-block{margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--border);text-align:left;}
+  .tl-expected{position:absolute;top:0;bottom:0;border-left:1px dashed rgba(255,255,255,0.35);border-right:1px dashed rgba(255,255,255,0.35);background:rgba(255,255,255,0.05);}
+  .tl-expected-line{position:absolute;top:-3px;bottom:-3px;width:2px;background:repeating-linear-gradient(180deg, #E9ECF1 0 4px, transparent 4px 8px);z-index:5;}
+  .tl-now{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--accent);}
+  .tl-hours{position:relative;height:14px;margin-bottom:10px;}
+  .tl-hours span{position:absolute;transform:translateX(-50%);font-size:9px;color:var(--text-dim);font-family:'IBM Plex Mono',monospace;}
+  .tl-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--text-dim);}
+  .tl-legend .dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:middle;}
   .sw-sub{font-size:12px;color:var(--text-dim);margin-bottom:18px;}
   .sw-loc-seg{display:flex;background:var(--surface-2);border-radius:10px;padding:4px;gap:4px;margin-bottom:16px;}
   .sw-loc-seg button{flex:1;background:none;border:none;color:var(--text-dim);padding:10px 6px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;display:flex;flex-direction:column;align-items:center;gap:3px;}
   .sw-loc-seg button.active{background:var(--accent);color:#1B1E26;}
-  .sw-clockin-btn{width:120px;height:120px;border-radius:50%;background:var(--accent);color:#1B1E26;border:none;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;cursor:pointer;margin:6px auto;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 8px rgba(212,162,76,0.12);}
+  .sw-clockin-btn{width:120px;height:120px;border-radius:50%;background:var(--accent);color:#1B1E26;border:none;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;line-height:1.25;cursor:pointer;margin:6px auto;display:flex;align-items:center;justify-content:center;text-align:center;box-shadow:0 0 0 8px rgba(80,135,199,0.15);}
   .sw-clockin-btn:active{transform:scale(0.97);}
   .sw-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
   .sw-actions.paused-mode{grid-template-columns:1fr;}
@@ -103,13 +121,21 @@
   .entry-row:last-child{border-bottom:none;}
   .entry-date{font-weight:600;font-size:14px;}
   .entry-sub{color:var(--text-dim);font-size:12px;margin-top:3px;font-family:'IBM Plex Mono',monospace;}
+  .entry-top-row{display:flex;align-items:center;flex-wrap:wrap;gap:8px;}
+  .badge-lg{font-size:13px;padding:5px 12px;font-weight:700;}
+  .entry-time{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text);}
+  .entry-note{color:var(--text-dim);font-size:12px;margin-top:4px;font-style:italic;}
   .entry-hours{text-align:right;}
   .entry-hours .h{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:15px;}
 
   .day-card{margin-bottom:12px;}
-  .day-card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+  .day-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+  .day-head-left{display:flex;flex-wrap:wrap;align-items:center;gap:8px;flex:1;min-width:0;}
   .day-card-head .dtitle{font-weight:600;font-size:14px;}
-  .day-card-head .dtotal{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;}
+  .day-total-label{font-size:13px;color:var(--text-dim);white-space:nowrap;}
+  .day-total-label .mono{color:var(--text);font-weight:600;font-size:16px;margin-left:4px;}
+  .day-right-group{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end;}
+  .day-required-btn{background:var(--surface-2);border:1px solid var(--border);color:var(--accent);border-radius:8px;padding:6px 10px;font-size:12px;font-family:'IBM Plex Mono',monospace;cursor:pointer;white-space:nowrap;}
 
   .month-label{font-size:12px;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:0.6px;margin:18px 0 6px;}
   .empty{text-align:center;color:var(--text-dim);padding:40px 20px;font-size:13px;}
@@ -174,8 +200,13 @@
   .cal-cell .cal-marker{font-size:10px;}
   .cal-cell.cal-green{background:#233A34;color:var(--normal);}
   .cal-cell.cal-red{background:#3E2420;color:#E08479;}
+  .cal-cell.cal-missing{background:#FF3B30;color:#fff;}
+  .cal-noinfo{font-size:6px;text-transform:uppercase;letter-spacing:0.2px;font-weight:700;}
   .cal-cell.cal-blue{background:#243347;color:#8FB4E0;}
   .cal-cell.cal-blue .cal-marker{color:#8FB4E0;}
+  .cal-cell.cal-split{color:var(--text);}
+  .cal-cell.cal-split-green{background:linear-gradient(135deg, #233A34 50%, #243347 50%);}
+  .cal-cell.cal-split-red{background:linear-gradient(135deg, #3E2420 50%, #243347 50%);}
   .cal-cell.cal-neutral{background:var(--surface-2);color:var(--text-dim);}
   .cal-cell.cal-future{background:transparent;border:1px dashed var(--border);color:var(--text-dim);cursor:default;}
   .cal-legend{display:flex;gap:14px;margin-top:12px;font-size:11px;color:var(--text-dim);flex-wrap:wrap;}
@@ -208,7 +239,7 @@
 
   <nav class="tabs" id="tabs">
     <button data-tab="log"><span class="ic">&#9201;</span>Log</button>
-    <button data-tab="leave"><span class="ic">&#127796;</span>Leave</button>
+    <button data-tab="leave"><span class="ic">&#128683;</span>Leave</button>
     <button data-tab="stats"><span class="ic">&#128202;</span>Stats</button>
     <button data-tab="settings"><span class="ic">&#9881;</span>Settings</button>
   </nav>
@@ -238,6 +269,7 @@ let state = {
   sessions: [],   // {id, date, location, clockIn, clockOut, breaks:[{type,start,end}], notes}
   leaves: [],     // {id, dateFrom, dateTo, type, comment}
   dayOverrides: {}, // { 'YYYY-MM-DD': targetMinutes } — overrides the schedule-derived target for that date
+  dayWindowOverrides: {}, // { 'YYYY-MM-DD': {start:'HH:MM', end:'HH:MM'} } — manual override of the expected start/end window shown on the timeline
   activeSession: null, // {id, date, location, startTs, breaks:[{type,startTs,endTs}], openBreak:{type,startTs}|null}
   activeTab: 'log',
   statsPeriod: 'month',
@@ -259,6 +291,9 @@ async function loadAll(){
   try{ const v = localStorage.getItem('tc_leaves'); if(v) state.leaves = JSON.parse(v); }catch(e){}
   try{ const v = localStorage.getItem('tc_activeSession'); if(v) state.activeSession = JSON.parse(v); }catch(e){}
   try{ const v = localStorage.getItem('tc_dayOverrides'); if(v) state.dayOverrides = JSON.parse(v); }catch(e){}
+  try{ const v = localStorage.getItem('tc_dayWindowOverrides'); if(v) state.dayWindowOverrides = JSON.parse(v); }catch(e){}
+  const repaired = normalizeSessionsAndLeaves();
+  if(repaired){ saveSessions(); saveLeaves(); }
   if(FS_SUPPORTED){
     try{
       const handle = await loadStoredHandle();
@@ -269,6 +304,24 @@ async function loadAll(){
       }
     }catch(e){ /* handle no longer valid */ }
   }
+}
+// Some other apps' exports (or hand-edited backups) omit per-item IDs, which
+// breaks row identification (every ID-less row collides on the same match).
+// This assigns fresh unique IDs to anything missing one. Returns true if it
+// had to fix anything, so the caller knows to persist the repair.
+function normalizeSessionsAndLeaves(){
+  let changed = false;
+  const seen = new Set();
+  state.sessions.forEach(s=>{
+    if(!s.id || seen.has(s.id)){ s.id = uid(); changed = true; }
+    seen.add(s.id);
+  });
+  const seenLeave = new Set();
+  state.leaves.forEach(l=>{
+    if(!l.id || seenLeave.has(l.id)){ l.id = uid(); changed = true; }
+    seenLeave.add(l.id);
+  });
+  return changed;
 }
 // Uses plain browser localStorage so this works as a standalone saved file,
 // not just inside a chat preview. Calls below are fire-and-forget (not
@@ -283,6 +336,7 @@ async function saveActiveSession(){
   }catch(e){ console.error('save active session failed', e); }
 }
 async function saveDayOverrides(){ try{ localStorage.setItem('tc_dayOverrides', JSON.stringify(state.dayOverrides)); }catch(e){ console.error('save overrides failed', e); } triggerBackup(); }
+async function saveDayWindowOverrides(){ try{ localStorage.setItem('tc_dayWindowOverrides', JSON.stringify(state.dayWindowOverrides)); }catch(e){ console.error('save window overrides failed', e); } triggerBackup(); }
 
 // ================= linked backup file (Chrome/Edge only) =================
 function openHandleDB(){
@@ -354,7 +408,7 @@ async function writeBackupFile(){
     if(perm !== 'granted'){ state.backupNeedsReconnect = true; return; }
     const writable = await state.backupHandle.createWritable();
     await writable.write(JSON.stringify({
-      settings: state.settings, sessions: state.sessions, leaves: state.leaves,
+      settings: state.settings, sessions: state.sessions, leaves: state.leaves, dayOverrides: state.dayOverrides, dayWindowOverrides: state.dayWindowOverrides,
       exportedAt: new Date().toISOString()
     }, null, 2));
     await writable.close();
@@ -382,9 +436,12 @@ async function restoreFromFile(file){
     state.settings = parsed.settings || JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
     state.sessions = parsed.sessions || [];
     state.leaves = parsed.leaves || [];
-    saveSettings(); saveSessions(); saveLeaves();
+    state.dayOverrides = parsed.dayOverrides || {};
+    state.dayWindowOverrides = parsed.dayWindowOverrides || {};
+    const repaired = normalizeSessionsAndLeaves();
+    saveSettings(); saveSessions(); saveLeaves(); saveDayOverrides(); saveDayWindowOverrides();
     render();
-    toast('Backup restored');
+    toast(repaired ? 'Backup restored (some entries were missing IDs — fixed automatically)' : 'Backup restored');
   }catch(e){
     alert('Could not read that file — make sure it\'s a timecard JSON backup.');
   }
@@ -398,7 +455,12 @@ function fmtHM(totalMinutes){
   const abs = Math.round(Math.abs(totalMinutes));
   return `${sign}${Math.floor(abs/60)}h ${(abs%60).toString().padStart(2,'0')}m`;
 }
-function fmtHours(totalMinutes){ return (totalMinutes/60).toFixed(2); }
+function fmtHours(totalMinutes){
+  const sign = totalMinutes<0 ? '-':'';
+  const abs = Math.round(Math.abs(totalMinutes));
+  const h = Math.floor(abs/60), m = abs%60;
+  return `${sign}${h}:${m.toString().padStart(2,'0')}`;
+}
 function fmtStopwatch(ms){
   const totalSec = Math.floor(ms/1000);
   const h = Math.floor(totalSec/3600), m = Math.floor((totalSec%3600)/60), s = totalSec%60;
@@ -419,6 +481,9 @@ function daysBetweenInclusive(a,b){
 function leaveForDate(dateStr){
   return state.leaves.find(l=> dateStr>=l.dateFrom && dateStr<=l.dateTo) || null;
 }
+function isFullDayLeave(leave){
+  return (leave.timeFrom||'00:00')==='00:00' && (leave.timeTo||'23:59')==='23:59';
+}
 // number of days of `leave` that fall within [start,end], inclusive, clipped to the leave's own range
 function leaveDaysClipped(leave, start, end){
   const from = leave.dateFrom > start ? leave.dateFrom : start;
@@ -427,11 +492,18 @@ function leaveDaysClipped(leave, start, end){
   return daysBetweenInclusive(from, to);
 }
 function targetMinutesFor(dateStr){
+  const leave = leaveForDate(dateStr);
+  if(leave && isFullDayLeave(leave)) return 0; // on approved full-day leave — nothing expected
   if(Object.prototype.hasOwnProperty.call(state.dayOverrides, dateStr)){
     return Math.max(0, state.dayOverrides[dateStr]);
   }
   const sched = state.settings.schedule[dowKey(dateStr)];
   return (sched && sched.enabled) ? Math.max(0,(toMinutes(sched.end)-toMinutes(sched.start))-(sched.lunchMinutes||0)) : 0;
+}
+// the weekly schedule's expected lunch length for that weekday (independent of any day-target override)
+function scheduledLunchMinutesFor(dateStr){
+  const sched = state.settings.schedule[dowKey(dateStr)];
+  return (sched && sched.enabled) ? Math.max(0, sched.lunchMinutes||0) : 0;
 }
 
 // worked minutes for one finished session (breaks subtracted regardless of type)
@@ -452,15 +524,22 @@ function sessionsByDate(){
   return map;
 }
 
-// day-level aggregate across all sessions for that date
+// day-level aggregate across all sessions for that date.
+// Time worked beyond the required hours is first credited against the day's
+// normal (scheduled) lunch length as "lunch worked" rather than overtime —
+// only time worked beyond BOTH the requirement and the full lunch allowance
+// counts as genuine overtime.
 function dayStats(dateStr, grouped){
   const list = (grouped ? grouped[dateStr] : sessionsByDate()[dateStr]) || [];
   const worked = list.reduce((a,s)=>a+computeSessionWorked(s),0);
   const target = targetMinutesFor(dateStr);
+  const schedLunch = scheduledLunchMinutesFor(dateStr);
   const normal = Math.min(worked,target);
-  const overtime = Math.max(0, worked-target);
+  const beyondTarget = Math.max(0, worked-target);
+  const lunchWorked = Math.min(beyondTarget, schedLunch);
+  const overtime = Math.max(0, beyondTarget - schedLunch);
   const undertime = Math.max(0, target-worked);
-  return {date:dateStr, worked, target, normal, overtime, undertime};
+  return {date:dateStr, worked, target, normal, overtime, undertime, lunchWorked, schedLunch};
 }
 
 // ================= shell =================
@@ -475,6 +554,7 @@ function setTab(tab){
 }
 function render(){
   stopLiveInterval();
+  stopLeaveCountdown();
   const main = document.getElementById('main');
   if(state.activeTab==='log'){ main.innerHTML = renderLogTab(); }
   else if(state.activeTab==='leave'){ main.innerHTML = renderLeaveTab(); }
@@ -482,6 +562,23 @@ function render(){
   else if(state.activeTab==='settings'){ main.innerHTML = renderSettingsTab(); }
   attachTabEvents();
   if(state.activeTab==='log' && state.activeSession) startLiveInterval();
+  if(state.activeTab==='leave'){
+    const today = todayStr();
+    const current = state.leaves.find(l=>l.dateFrom<=today && today<=l.dateTo);
+    if(current){
+      const nextWork = nextWorkdayAfter(current.dateTo);
+      if(nextWork){
+        const targetTs = new Date(`${nextWork.date}T${fmtClock(nextWork.startMin)}:00`).getTime();
+        startCountdownTo(targetTs, 'returnCountdown');
+      }
+    } else {
+      const upcoming = state.leaves.filter(l=>l.dateFrom>today).sort((a,b)=>a.dateFrom.localeCompare(b.dateFrom))[0];
+      if(upcoming){
+        const targetTs = new Date(`${upcoming.dateFrom}T${(upcoming.timeFrom||'00:00')}:00`).getTime();
+        startCountdownTo(targetTs, 'leaveCountdown');
+      }
+    }
+  }
 }
 
 // ================= LOG TAB =================
@@ -502,29 +599,50 @@ function renderLogTab(){
       html += `<div class="month-label">${month}</div>`;
       byMonth[month].forEach(dateStr=>{
         const stats = dayStats(dateStr, grouped);
-        let badge = '';
-        if(stats.overtime>0) badge = `<span class="badge overtime">+${fmtHM(stats.overtime)} OT</span>`;
-        else if(stats.undertime>0 && stats.target>0) badge = `<span class="badge under">-${fmtHM(stats.undertime)}</span>`;
-        else if(stats.target>0) badge = `<span class="badge normal">on target</span>`;
+        const delta = stats.worked - stats.target;
+        let hoursReachedBadge = '';
+        if(stats.target>0){
+          if(delta<0) hoursReachedBadge = `<span class="badge hoursshort">Hours Short: ${fmtHours(Math.abs(delta))}</span>`;
+          else hoursReachedBadge = `<span class="badge normal">Hours reached: ${delta>0?'+':''}${fmtHours(delta)}</span>`;
+        }
+        let extraBadges = '';
+        if(stats.lunchWorked>0) extraBadges += ` <span class="badge lunch">Lunch Worked ${fmtHM(stats.lunchWorked)}</span>`;
+        const dayLeave = leaveForDate(dateStr);
+        if(dayLeave){
+          const marker = dayLeave.type==='sick' ? '&#128137;' : '&#128683;';
+          const timeLabel = isFullDayLeave(dayLeave) ? 'full day' : `${dayLeave.timeFrom}&ndash;${dayLeave.timeTo}`;
+          extraBadges += ` <span class="badge leaveblue">${marker} leave (${timeLabel})</span>`;
+        }
+        const warningIcon = (stats.target>0 && stats.undertime>0) ? ' &#9888;&#65039;' : '';
 
         html += `<div class="card day-card">
           <div class="day-card-head">
-            <div class="dtitle">${niceDate(dateStr)}</div>
-            <div style="display:flex;align-items:center;gap:8px;">
-              <div class="dtotal">${fmtHours(stats.worked)}h</div>
-              <button type="button" class="icon-btn edit-target-btn" data-date="${dateStr}" title="Edit required hours for this day">&#9998;</button>
+            <div class="day-head-left">
+              <div class="dtitle">${niceDate(dateStr)}</div>
+              ${hoursReachedBadge}
+              ${extraBadges}${Object.prototype.hasOwnProperty.call(state.dayOverrides,dateStr) ? ' <span class="badge under">custom target</span>' : ''}
             </div>
-          </div>
-          <div style="margin-bottom:8px;">${badge}${Object.prototype.hasOwnProperty.call(state.dayOverrides,dateStr) ? ' <span class="badge under">custom target</span>' : ''}</div>`;
+            <div class="day-right-group">
+              <button type="button" class="day-required-btn edit-target-btn" data-date="${dateStr}" title="Edit required hours for this day">Expected ${fmtHours(stats.target)} &#9998;</button>
+              <div class="day-total-label">Total Hours: <span class="mono">${fmtHours(stats.worked)}</span>${warningIcon}</div>
+            </div>
+          </div>`;
         grouped[dateStr].sort((a,b)=>toMinutes(a.clockIn)-toMinutes(b.clockIn)).forEach(s=>{
           const worked = computeSessionWorked(s);
           const breakBadges = (s.breaks||[]).filter(b=>b.start&&b.end).map(b=>`<span class="badge ${b.type}">${b.type==='lunch'?'lunch':'break'} ${b.start}-${b.end}</span>`).join(' ');
           html += `<div class="entry-row" data-session-id="${s.id}">
             <div>
-              <span class="badge ${s.location.toLowerCase()}">${s.location}</span>
-              <div class="entry-sub">${s.clockIn}&ndash;${s.clockOut||'&hellip;'} ${breakBadges}</div>
+              <div class="entry-top-row">
+                <span class="badge badge-lg ${s.location.toLowerCase()}">${s.location}</span>
+                <span class="entry-time">${s.clockIn}&ndash;${s.clockOut||'&hellip;'}</span>
+                ${breakBadges}
+              </div>
+              ${s.notes ? `<div class="entry-note">${escapeHtml(s.notes)}</div>` : ''}
             </div>
-            <div class="entry-hours"><div class="h">${fmtHours(worked)}h</div></div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="entry-hours"><div class="h">${fmtHours(worked)}</div></div>
+              <button type="button" class="icon-btn session-edit-btn" data-session-id="${s.id}" title="Edit this entry">&#9998;</button>
+            </div>
           </div>`;
         });
         html += `</div>`;
@@ -536,24 +654,27 @@ function renderLogTab(){
 
 function renderStopwatch(){
   const a = state.activeSession;
+  const timelineHtml = renderTimelineBlock();
   if(!a){
     return `
       <div class="stopwatch">
+        ${timelineHtml}
         <div class="sw-state">Ready to clock in</div>
         <div class="sw-loc-seg" id="sw_loc_seg">
           <button type="button" data-loc="Office" class="active">&#127970;<span>Office</span></button>
           <button type="button" data-loc="Remote">&#127968;<span>Remote</span></button>
           <button type="button" data-loc="Site">&#128205;<span>Site</span></button>
         </div>
-        <button class="sw-clockin-btn" id="btnClockIn">CLOCK<br>IN</button>
+        <button class="sw-clockin-btn" id="btnClockIn">${hasDataToday() ? 'CLOCK<br>BACK IN' : 'CLOCK<br>IN'}</button>
         ${todayTotalLine()}
       </div>`;
   }
   const onBreak = !!a.openBreak;
   return `
     <div class="stopwatch">
+      ${timelineHtml}
       <div class="sw-state ${onBreak?'paused':'live'}">${onBreak? (a.openBreak.type==='lunch'?'On lunch':'On break') : 'Clocked in &middot; '+a.location}</div>
-      <div class="sw-timer ${onBreak?'paused':''}" id="swTimerDisplay">00:00:00</div>
+      <div class="sw-timer" id="swTimerDisplay">00:00:00</div>
       <div class="sw-sub">${onBreak? 'since '+hhmmFromTs(a.openBreak.startTs) : 'since '+hhmmFromTs(a.startTs)}</div>
       ${onBreak ? `
         <div class="sw-actions paused-mode">
@@ -568,6 +689,209 @@ function renderStopwatch(){
       `}
       ${todayTotalLine()}
     </div>`;
+}
+
+function minutesSinceMidnight(ts){ const d=new Date(ts); return d.getHours()*60+d.getMinutes()+d.getSeconds()/60; }
+
+function hasDataToday(){
+  return (sessionsByDate()[todayStr()]||[]).length>0 || !!state.activeSession;
+}
+
+// Determines the timer text color: red while under today's target, green once reached/exceeded, grey while paused.
+function computeTimerColorState(){
+  const targetMin = targetMinutesFor(todayStr());
+  const finished = (sessionsByDate()[todayStr()]||[]).reduce((sum,s)=>sum+computeSessionWorked(s),0);
+  const a = state.activeSession;
+  const isPaused = !!(a && a.openBreak);
+  let liveElapsedMin = 0;
+  if(a && !a.openBreak){
+    const breaksMs = (a.breaks||[]).reduce((sum,b)=> sum + (b.endTs? (b.endTs-b.startTs):0), 0);
+    liveElapsedMin = Math.max(0, Date.now()-a.startTs-breaksMs)/60000;
+  }
+  const elapsedMin = finished + liveElapsedMin;
+  if(isPaused) return 'grey';
+  if(targetMin>0 && elapsedMin>=targetMin) return 'green';
+  return 'red';
+}
+const TIMER_COLORS = { grey:'#D9B054', red:'#E5534B', green:'#5BA88F' };
+
+// Builds the raw chronological work/break intervals (in minutes-since-midnight) for today,
+// across all finished sessions plus the live in-progress one, then splits the work
+// intervals into 'blue' (toward today's target) vs 'green' (overtime) based on
+// cumulative worked minutes crossing the target — matching the rest of the app's logic.
+function buildDayIntervals(dateStr){
+  const isToday = dateStr===todayStr();
+  const rawWorkChunks = [];
+  const breakChunks = [];
+
+  function processSpan(startMin, endMin, breaks){
+    let cursor = startMin;
+    const sorted = (breaks||[]).filter(b=>b.start&&b.end).map(b=>({s:toMinutes(b.start), e:toMinutes(b.end)})).sort((a,b)=>a.s-b.s);
+    sorted.forEach(b=>{
+      if(b.s>cursor) rawWorkChunks.push({start:cursor, end:Math.min(b.s,endMin)});
+      breakChunks.push({start:Math.max(b.s,startMin), end:Math.min(b.e,endMin)});
+      cursor = Math.max(cursor, b.e);
+    });
+    if(cursor<endMin) rawWorkChunks.push({start:cursor, end:endMin});
+  }
+
+  const sessions = (sessionsByDate()[dateStr]||[]).slice().sort((a,b)=>toMinutes(a.clockIn)-toMinutes(b.clockIn));
+  sessions.forEach(s=> processSpan(toMinutes(s.clockIn), toMinutes(s.clockOut), s.breaks));
+
+  const now = new Date();
+  let nowMin = isToday ? (now.getHours()*60+now.getMinutes()+now.getSeconds()/60) : null;
+  const a = state.activeSession;
+  if(isToday && a && a.date===dateStr){
+    const startMin = minutesSinceMidnight(a.startTs);
+    const finishedBreaks = (a.breaks||[]).map(b=>({start:hhmmFromTs(b.startTs), end:hhmmFromTs(b.endTs)}));
+    if(a.openBreak){
+      processSpan(startMin, minutesSinceMidnight(a.openBreak.startTs), finishedBreaks);
+      breakChunks.push({start:minutesSinceMidnight(a.openBreak.startTs), end:nowMin});
+    } else {
+      processSpan(startMin, nowMin, finishedBreaks);
+    }
+  }
+
+  rawWorkChunks.sort((x,y)=>x.start-y.start);
+  const target = targetMinutesFor(dateStr);
+  const schedLunch = scheduledLunchMinutesFor(dateStr);
+  const t1 = target;          // normal -> lunch-worked boundary
+  const t2 = target+schedLunch; // lunch-worked -> real overtime boundary
+  let cumulative = 0;
+  const coloredWork = [];
+  rawWorkChunks.forEach(chunk=>{
+    const dur = chunk.end-chunk.start;
+    if(dur<=0) return;
+    if(target<=0){
+      coloredWork.push({...chunk, color:'green'});
+      cumulative += dur;
+      return;
+    }
+    const segStart = cumulative, segEnd = cumulative+dur;
+    let points = [segStart, segEnd];
+    if(t1>segStart && t1<segEnd) points.push(t1);
+    if(t2>segStart && t2<segEnd) points.push(t2);
+    points = [...new Set(points)].sort((a,b)=>a-b);
+    for(let i=0;i<points.length-1;i++){
+      const a2=points[i], b2=points[i+1];
+      if(b2<=a2) continue;
+      const mid=(a2+b2)/2;
+      const color = mid<t1 ? 'blue' : (mid<t2 ? 'yellow' : 'green');
+      coloredWork.push({start: chunk.start+(a2-segStart), end: chunk.start+(b2-segStart), color});
+    }
+    cumulative += dur;
+  });
+
+  return {coloredWork, breakChunks, nowMin};
+}
+
+// Zoomed-in visible range for the timeline: an hour of padding either side of
+// whatever actually happened (scheduled window, worked time, breaks, and
+// "now" if still live) — instead of the full 00:00-23:59 day, since almost
+// nobody works the very early/late edges of a full day.
+function computeTimelineRange(dateStr){
+  const win = expectedWindowFor(dateStr);
+  const {coloredWork, breakChunks, nowMin} = buildDayIntervals(dateStr);
+  let minStart = win ? win.start : 420;
+  let maxEnd = win ? win.end : 960;
+  coloredWork.forEach(w=>{ minStart=Math.min(minStart,w.start); maxEnd=Math.max(maxEnd,w.end); });
+  breakChunks.forEach(b=>{ minStart=Math.min(minStart,b.start); maxEnd=Math.max(maxEnd,b.end); });
+  if(nowMin!==null) maxEnd = Math.max(maxEnd, nowMin);
+  minStart -= 60; maxEnd += 60;
+  minStart = Math.max(0, Math.floor(minStart));
+  maxEnd = Math.min(1440, Math.ceil(maxEnd));
+  if(maxEnd-minStart < 180) maxEnd = Math.min(1440, minStart+180);
+  return {minStart, maxEnd};
+}
+
+// The expected start/end window for a day, in minutes-since-midnight.
+// Priority: manual override > auto-shifted-to-actual-clock-in > raw schedule.
+// Auto-shift keeps the same scheduled SPAN length, just moved to start at
+// whenever you actually first clocked in, if that differs from the schedule.
+function expectedWindowFor(dateStr){
+  if(state.dayWindowOverrides[dateStr]){
+    const w = state.dayWindowOverrides[dateStr];
+    return {start: toMinutes(w.start), end: toMinutes(w.end)};
+  }
+  const sched = state.settings.schedule[dowKey(dateStr)];
+  if(!sched || !sched.enabled) return null;
+  const schedStart = toMinutes(sched.start);
+  const schedEnd = toMinutes(sched.end);
+  const spanLen = schedEnd - schedStart;
+
+  let actualStart = null;
+  const sessions = (sessionsByDate()[dateStr]||[]);
+  sessions.forEach(s=>{
+    const m = toMinutes(s.clockIn);
+    if(actualStart===null || m<actualStart) actualStart = m;
+  });
+  if(dateStr===todayStr() && state.activeSession && state.activeSession.date===dateStr){
+    const liveStart = minutesSinceMidnight(state.activeSession.startTs);
+    if(actualStart===null || liveStart<actualStart) actualStart = liveStart;
+  }
+
+  if(actualStart!==null && actualStart!==schedStart){
+    return {start: actualStart, end: actualStart+spanLen};
+  }
+  return {start: schedStart, end: schedEnd};
+}
+
+function buildTimelineSegmentsHTML(dateStr){
+  const {coloredWork, breakChunks, nowMin} = buildDayIntervals(dateStr);
+  const expectedBand = expectedWindowFor(dateStr);
+  const {minStart, maxEnd} = computeTimelineRange(dateStr);
+  const span = Math.max(1, maxEnd-minStart);
+  function pct(min){ return (((min-minStart)/span)*100).toFixed(3); }
+  let segs = '';
+  if(expectedBand) segs += `<div class="tl-expected" style="left:${pct(expectedBand.start)}%; width:${((Math.max(0,expectedBand.end-expectedBand.start)/span)*100).toFixed(3)}%;"></div>`;
+  coloredWork.forEach(w=> segs += `<div class="tl-seg tl-${w.color}" style="left:${pct(w.start)}%; width:${((Math.max(0,w.end-w.start)/span)*100).toFixed(3)}%;"></div>`);
+  breakChunks.forEach(b=> segs += `<div class="tl-seg tl-grey" style="left:${pct(b.start)}%; width:${((Math.max(0,b.end-b.start)/span)*100).toFixed(3)}%;"></div>`);
+  if(expectedBand){
+    segs += `<div class="tl-expected-line" style="left:${pct(expectedBand.start)}%;"></div>`;
+    segs += `<div class="tl-expected-line" style="left:${pct(expectedBand.end)}%;"></div>`;
+  }
+  if(nowMin!==null) segs += `<div class="tl-now" style="left:${pct(nowMin)}%;"></div>`;
+  return segs;
+}
+
+function buildTimelineHourTicksHTML(dateStr){
+  const {minStart, maxEnd} = computeTimelineRange(dateStr);
+  const span = Math.max(1, maxEnd-minStart);
+  let ticks = '';
+  let h = Math.ceil(minStart/60)*60;
+  for(; h<=maxEnd; h+=60){
+    ticks += `<span style="left:${(((h-minStart)/span)*100).toFixed(3)}%;">${(h/60)%24}</span>`;
+  }
+  return ticks;
+}
+
+function renderTimelineBlock(){
+  if(!hasDataToday()) return '';
+  const today = todayStr();
+  const win = expectedWindowFor(today);
+  const winLabel = win ? `${fmtClock(win.start)}&ndash;${fmtClock(win.end)}` : 'not scheduled';
+  return `
+    <div class="tl-block">
+      <div class="row-between" style="margin-bottom:10px;">
+        <div class="card-title" style="margin:0;">Today's Timeline</div>
+        <button type="button" class="day-required-btn edit-window-btn" data-date="${today}" title="Edit today's expected start/end">Expected ${winLabel} &#9998;</button>
+      </div>
+      <div class="tl-wrap" id="timelineBar">${buildTimelineSegmentsHTML(today)}</div>
+      <div class="tl-hours" id="timelineHours">${buildTimelineHourTicksHTML(today)}</div>
+      <div class="tl-legend">
+        <span><span class="dot" style="background:#5087C7;"></span>Worked</span>
+        <span><span class="dot" style="background:#D9B054;"></span>Lunch Worked</span>
+        <span><span class="dot" style="background:#5BA88F;"></span>Overtime</span>
+        <span><span class="dot" style="background:#6B7280;"></span>Break/Lunch</span>
+        <span><span class="dot" style="background:transparent;border:1px dashed var(--text-dim);"></span>Expected window</span>
+      </div>
+    </div>`;
+}
+
+function fmtClock(min){
+  min = ((min%1440)+1440)%1440;
+  const h = Math.floor(min/60), m = Math.round(min%60);
+  return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}`;
 }
 
 function todayTotalLine(){
@@ -586,6 +910,11 @@ function startLiveInterval(){
 }
 function stopLiveInterval(){ if(liveInterval){ clearInterval(liveInterval); liveInterval=null; } }
 function updateLiveDisplay(){
+  if(state.activeSession && state.activeSession.date !== todayStr()){
+    checkMidnightRollover();
+    render();
+    return;
+  }
   const el = document.getElementById('swTimerDisplay');
   if(!el || !state.activeSession) return;
   const a = state.activeSession;
@@ -596,6 +925,11 @@ function updateLiveDisplay(){
     ms = Date.now() - a.startTs - breaksMs;
   }
   el.textContent = fmtStopwatch(Math.max(0,ms));
+  el.style.color = TIMER_COLORS[computeTimerColorState()];
+  const timelineBar = document.getElementById('timelineBar');
+  if(timelineBar) timelineBar.innerHTML = buildTimelineSegmentsHTML(todayStr());
+  const timelineHours = document.getElementById('timelineHours');
+  if(timelineHours) timelineHours.innerHTML = buildTimelineHourTicksHTML(todayStr());
 }
 
 // ---- clock actions ----
@@ -664,6 +998,59 @@ function openDayTargetModal(dateStr){
   if(resetBtn) resetBtn.addEventListener('click', ()=>{
     delete state.dayOverrides[dateStr];
     closeModal(); render(); saveDayOverrides();
+  });
+}
+
+function openDayWindowModal(dateStr){
+  const hasWindowOverride = !!state.dayWindowOverrides[dateStr];
+  const hasHoursOverride = Object.prototype.hasOwnProperty.call(state.dayOverrides, dateStr);
+  const win = expectedWindowFor(dateStr) || {start: 7*60, end: 16*60};
+  const currentTargetMin = targetMinutesFor(dateStr);
+  const currentHours = (currentTargetMin/60).toFixed(2).replace(/\.00$/,'');
+  const html = `
+    <h2>Expected &mdash; ${niceDate(dateStr)}</h2>
+    <div class="entry-sub" style="margin-bottom:14px;">Window controls where today's timeline shows your day starting/ending. Hours required controls your target for overtime/shortfall &mdash; they're independent.</div>
+    <div class="two-col">
+      <div class="field"><label>Start</label><input type="time" id="f_winStart" value="${fmtClock(win.start)}"></div>
+      <div class="field"><label>End</label><input type="time" id="f_winEnd" value="${fmtClock(win.end)}"></div>
+    </div>
+    ${hasWindowOverride? `<button type="button" class="btn secondary small" id="btnResetWindow" style="margin-bottom:14px;">Use automatic window</button>`:''}
+    <div class="field">
+      <label>Hours required (0&ndash;24)</label>
+      <input type="number" id="f_targetHours" min="0" max="24" step="0.25" value="${currentHours}">
+    </div>
+    ${hasHoursOverride? `<button type="button" class="btn secondary small" id="btnResetTarget" style="margin-bottom:4px;">Use schedule hours</button>`:''}
+    <div class="modal-actions">
+      <button class="btn secondary" id="btnCancelModal">Cancel</button>
+      <button class="btn" id="btnSaveWindow">Save</button>
+    </div>`;
+  showModal(html);
+  document.getElementById('btnCancelModal').addEventListener('click', closeModal);
+  document.getElementById('btnSaveWindow').addEventListener('click', ()=>{
+    const start = document.getElementById('f_winStart').value;
+    const end = document.getElementById('f_winEnd').value;
+    if(!start || !end){ alert('Both times are required.'); return; }
+    if(toMinutes(end) <= toMinutes(start)){ alert('End must be after start.'); return; }
+    const hours = parseFloat(document.getElementById('f_targetHours').value);
+    if(isNaN(hours) || hours<0 || hours>24){ alert('Enter a number of hours between 0 and 24.'); return; }
+    state.dayWindowOverrides[dateStr] = {start, end};
+    state.dayOverrides[dateStr] = Math.round(hours*60);
+    closeModal(); render(); saveDayWindowOverrides(); saveDayOverrides();
+  });
+  const resetWinBtn = document.getElementById('btnResetWindow');
+  if(resetWinBtn) resetWinBtn.addEventListener('click', ()=>{
+    delete state.dayWindowOverrides[dateStr];
+    document.getElementById('f_winStart').value = fmtClock((expectedWindowFor(dateStr)||{start:420}).start);
+    document.getElementById('f_winEnd').value = fmtClock((expectedWindowFor(dateStr)||{end:960}).end);
+    saveDayWindowOverrides();
+    resetWinBtn.remove();
+  });
+  const resetTargetBtn = document.getElementById('btnResetTarget');
+  if(resetTargetBtn) resetTargetBtn.addEventListener('click', ()=>{
+    delete state.dayOverrides[dateStr];
+    document.getElementById('f_targetHours').value = (targetMinutesFor(dateStr)/60).toFixed(2).replace(/\.00$/,'');
+    saveDayOverrides();
+    resetTargetBtn.remove();
   });
 }
 
@@ -762,18 +1149,80 @@ function deleteSession(id){
 }
 
 // ================= LEAVE TAB =================
+function fmtCountdown(ms){
+  if(ms<=0) return 'Starting now';
+  const totalSec = Math.floor(ms/1000);
+  const days = Math.floor(totalSec/86400);
+  const hours = Math.floor((totalSec%86400)/3600);
+  const mins = Math.floor((totalSec%3600)/60);
+  const secs = totalSec%60;
+  return `${days}d ${hours.toString().padStart(2,'0')}h ${mins.toString().padStart(2,'0')}m ${secs.toString().padStart(2,'0')}s`;
+}
+let leaveCountdownInterval = null;
+function stopLeaveCountdown(){ if(leaveCountdownInterval){ clearInterval(leaveCountdownInterval); leaveCountdownInterval=null; } }
+function startCountdownTo(targetTs, elementId){
+  stopLeaveCountdown();
+  function tick(){
+    const el = document.getElementById(elementId);
+    if(!el){ stopLeaveCountdown(); return; }
+    el.textContent = fmtCountdown(targetTs - Date.now());
+  }
+  tick();
+  leaveCountdownInterval = setInterval(tick, 1000);
+}
+// Finds the next date after `dateStr` where the weekly schedule is enabled
+// and you're not on full-day leave, and returns its scheduled start time —
+// i.e. "when do I actually need to be back at work".
+function nextWorkdayAfter(dateStr){
+  for(let i=1;i<=21;i++){
+    const d = new Date(dateStr+'T00:00:00');
+    d.setDate(d.getDate()+i);
+    const ds = isoDate(d);
+    const sched = state.settings.schedule[dowKey(ds)];
+    if(!sched || !sched.enabled) continue;
+    const leave = leaveForDate(ds);
+    if(leave && isFullDayLeave(leave)) continue;
+    return {date: ds, startMin: toMinutes(sched.start)};
+  }
+  return null;
+}
+function renderLeaveStatusCard(){
+  const today = todayStr();
+  const current = state.leaves.find(l=> l.dateFrom<=today && today<=l.dateTo);
+  if(current){
+    const marker = current.type==='sick' ? '&#128137;' : '&#128683;';
+    const nextWork = nextWorkdayAfter(current.dateTo);
+    return `<div class="card">
+      <div class="card-title">Currently on leave</div>
+      <div class="entry-sub" style="margin-bottom:8px;">${marker} ${current.type==='sick'?'Sick':current.type==='annual'?'Annual':'Other'} leave${isFullDayLeave(current)?'':` (${current.timeFrom}&ndash;${current.timeTo})`} until ${niceDate(current.dateTo)}</div>
+      ${nextWork ? `
+        <div class="entry-sub" style="margin-bottom:6px;">Back at work: ${niceDate(nextWork.date)} &middot; ${fmtClock(nextWork.startMin)}</div>
+        <div class="mono" id="returnCountdown" style="font-size:20px;font-weight:600;color:var(--leave);"></div>
+      ` : ''}
+    </div>`;
+  }
+  const upcoming = state.leaves.filter(l=>l.dateFrom>today).sort((a,b)=>a.dateFrom.localeCompare(b.dateFrom))[0];
+  if(!upcoming) return '';
+  return `<div class="card">
+    <div class="card-title">Next leave</div>
+    <div class="entry-sub" style="margin-bottom:8px;">${niceDate(upcoming.dateFrom)} &middot; ${upcoming.type==='sick'?'Sick':upcoming.type==='annual'?'Annual':'Other'}${isFullDayLeave(upcoming)?'':` (${upcoming.timeFrom}&ndash;${upcoming.timeTo})`}</div>
+    <div class="mono" id="leaveCountdown" style="font-size:20px;font-weight:600;color:var(--leave);"></div>
+  </div>`;
+}
 function renderLeaveTab(){
   const sorted = [...state.leaves].sort((a,b)=> b.dateFrom.localeCompare(a.dateFrom));
-  let html = `<button class="btn full" id="btnNewLeave">+ Add Leave</button>`;
+  let html = renderLeaveStatusCard();
+  html += `<button class="btn full" id="btnNewLeave">+ Add Leave</button>`;
   if(sorted.length===0){ html += `<div class="empty">No leave logged yet.</div>`; }
   else {
     html += `<div class="card">`;
     sorted.forEach(l=>{
       const days = daysBetweenInclusive(l.dateFrom, l.dateTo);
       const rangeLabel = l.dateFrom===l.dateTo ? niceDate(l.dateFrom) : `${niceDate(l.dateFrom)} &ndash; ${niceDate(l.dateTo)}`;
+      const timeLabel = isFullDayLeave(l) ? '' : ` &middot; ${l.timeFrom}&ndash;${l.timeTo}`;
       html += `<div class="entry-row" data-leave-id="${l.id}">
         <div><div class="entry-date">${rangeLabel}</div>
-          <div class="entry-sub">${days} day${days!==1?'s':''}${l.comment? ' &middot; '+escapeHtml(l.comment):''}</div>
+          <div class="entry-sub">${days} day${days!==1?'s':''}${timeLabel}${l.comment? ' &middot; '+escapeHtml(l.comment):''}</div>
         </div>
         <div class="entry-hours"><span class="badge ${l.type}">${l.type==='annual'?'Annual':l.type==='sick'?'Sick':'Other'}</span></div>
       </div>`;
@@ -784,13 +1233,18 @@ function renderLeaveTab(){
 }
 function openLeaveModal(leaveId){
   const leave = leaveId ? state.leaves.find(l=>l.id===leaveId) : null;
-  const data = leave || {id:null, dateFrom: todayStr(), dateTo: todayStr(), type:'annual', comment:''};
+  const data = leave || {id:null, dateFrom: todayStr(), dateTo: todayStr(), timeFrom:'00:00', timeTo:'23:59', type:'annual', comment:''};
   const html = `
     <h2>${leave? 'Edit Leave':'Add Leave'}</h2>
     <div class="two-col">
       <div class="field"><label>From</label><input type="date" id="l_dateFrom" value="${data.dateFrom}"></div>
       <div class="field"><label>To</label><input type="date" id="l_dateTo" value="${data.dateTo}"></div>
     </div>
+    <div class="two-col">
+      <div class="field"><label>Time from</label><input type="time" id="l_timeFrom" value="${data.timeFrom||'00:00'}"></div>
+      <div class="field"><label>Time to</label><input type="time" id="l_timeTo" value="${data.timeTo||'23:59'}"></div>
+    </div>
+    <div class="entry-sub" style="margin:-8px 0 14px;">Leave defaults to the full day (00:00&ndash;23:59). Narrow the times for a partial-day / half-day leave.</div>
     <div class="field">
       <label>Type</label>
       <div class="seg" id="l_type_seg">
@@ -821,14 +1275,17 @@ function openLeaveModal(leaveId){
 function saveLeaveFromForm(existingId){
   const dateFrom = document.getElementById('l_dateFrom').value;
   const dateTo = document.getElementById('l_dateTo').value;
+  const timeFrom = document.getElementById('l_timeFrom').value || '00:00';
+  const timeTo = document.getElementById('l_timeTo').value || '23:59';
   const type = document.querySelector('#l_type_seg button.active').dataset.type;
   const comment = document.getElementById('l_comment').value;
   if(!dateFrom || !dateTo){ alert('Both dates are required.'); return; }
   if(dateTo < dateFrom){ alert('"To" date must be on or after "From" date.'); return; }
+  if(toMinutes(timeTo) <= toMinutes(timeFrom)){ alert('"Time to" must be after "Time from".'); return; }
   if(existingId){
     const idx = state.leaves.findIndex(l=>l.id===existingId);
-    state.leaves[idx] = {...state.leaves[idx], dateFrom, dateTo, type, comment};
-  } else { state.leaves.push({id: uid(), dateFrom, dateTo, type, comment}); }
+    state.leaves[idx] = {...state.leaves[idx], dateFrom, dateTo, timeFrom, timeTo, type, comment};
+  } else { state.leaves.push({id: uid(), dateFrom, dateTo, timeFrom, timeTo, type, comment}); }
   closeModal();
   render();
   saveLeaves();
@@ -907,7 +1364,7 @@ function attachSettingsEvents(){
   });
   const exportBtn = document.getElementById('btnExportJson');
   if(exportBtn) exportBtn.addEventListener('click', ()=>{
-    const blob = new Blob([JSON.stringify({settings:state.settings, sessions:state.sessions, leaves:state.leaves}, null, 2)], {type:'application/json'});
+    const blob = new Blob([JSON.stringify({settings:state.settings, sessions:state.sessions, leaves:state.leaves, dayOverrides:state.dayOverrides, dayWindowOverrides:state.dayWindowOverrides}, null, 2)], {type:'application/json'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = 'timecard-backup.json'; a.click();
     URL.revokeObjectURL(url);
@@ -934,6 +1391,13 @@ function attachSettingsEvents(){
 }
 
 // ================= STATS TAB =================
+function allDatesInRange(start,end){
+  const dates=[];
+  let d = new Date(start+'T00:00:00');
+  const endD = new Date(end+'T00:00:00');
+  while(d<=endD){ dates.push(isoDate(d)); d.setDate(d.getDate()+1); }
+  return dates;
+}
 function periodRange(period){
   const now = new Date();
   let start, end;
@@ -956,11 +1420,27 @@ function periodRange(period){
 function ensureCalendarDefaults(){
   if(state.calYear===null){ const d=new Date(); state.calYear=d.getFullYear(); state.calMonth=d.getMonth(); }
 }
+function isNoInfoDay(dateStr){
+  if(leaveForDate(dateStr)) return false;
+  if(dateStr >= todayStr()) return false;
+  const stats = dayStats(dateStr);
+  return stats.target>0 && stats.worked<=0;
+}
 function calendarDayColor(dateStr){
-  if(leaveForDate(dateStr)) return 'blue';
+  const leave = leaveForDate(dateStr);
+  if(leave){
+    if(isFullDayLeave(leave)) return 'blue';
+    const stats = dayStats(dateStr);
+    if(stats.worked>0){
+      const base = (stats.target<=0) ? 'green' : (stats.undertime<5 ? 'green':'red');
+      return 'split-'+base;
+    }
+    return 'blue';
+  }
   if(dateStr > todayStr()) return 'future';
   const stats = dayStats(dateStr);
   if(stats.target<=0) return stats.worked>0 ? 'green' : 'neutral';
+  if(isNoInfoDay(dateStr)) return 'missing';
   if(stats.undertime < 5) return 'green';
   return 'red';
 }
@@ -976,10 +1456,13 @@ function renderCalendarSection(){
   for(let day=1; day<=daysInMonth; day++){
     const dateStr = `${year}-${(month+1).toString().padStart(2,'0')}-${day.toString().padStart(2,'0')}`;
     const color = calendarDayColor(dateStr);
+    const isSplit = color.startsWith('split-');
+    const cellClass = isSplit ? `cal-split cal-split-${color.replace('split-','')}` : `cal-${color}`;
     const leave = leaveForDate(dateStr);
     let marker = '';
-    if(leave){ marker = leave.type==='sick' ? '&#128137;' : '&times;'; }
-    cells += `<div class="cal-cell cal-${color}" data-cal-date="${dateStr}"><span class="cal-daynum">${day}</span>${marker? `<span class="cal-marker">${marker}</span>`:''}</div>`;
+    if(leave){ marker = leave.type==='sick' ? '&#128137;' : '&#128683;'; }
+    const noInfoLabel = color==='missing' ? `<span class="cal-noinfo">No Info</span>` : '';
+    cells += `<div class="cal-cell ${cellClass}" data-cal-date="${dateStr}"><span class="cal-daynum">${day}</span>${marker? `<span class="cal-marker">${marker}</span>`:''}${noInfoLabel}</div>`;
   }
   return `
     <div class="card">
@@ -994,7 +1477,8 @@ function renderCalendarSection(){
       <div class="cal-legend">
         <span><span class="dot" style="background:#233A34;"></span>Met / exceeded</span>
         <span><span class="dot" style="background:#3E2420;"></span>Shortfall</span>
-        <span><span class="dot" style="background:#243347;"></span>Leave (&times;) / Sick (&#128137;)</span>
+        <span><span class="dot" style="background:#FF3B30;"></span>No Info</span>
+        <span><span class="dot" style="background:#243347;"></span>Leave (&#128683;) / Sick (&#128137;)</span>
       </div>
     </div>`;
 }
@@ -1015,7 +1499,7 @@ function attachCalendarEvents(){
       const stats = dayStats(dateStr);
       const leave = leaveForDate(dateStr);
       if(leave){ toast(`${niceDate(dateStr)}: ${leave.type} leave`); }
-      else { toast(`${niceDate(dateStr)}: worked ${fmtHours(stats.worked)}h of ${fmtHours(stats.target)}h target`); }
+      else { toast(`${niceDate(dateStr)}: worked ${fmtHours(stats.worked)} of ${fmtHours(stats.target)} target`); }
     });
   });
 }
@@ -1025,13 +1509,17 @@ function renderStatsTab(){
   const datesInRange = Object.keys(grouped).filter(d=> d>=start && d<=end).sort();
   const leavesInRange = state.leaves.filter(l=> l.dateTo>=start && l.dateFrom<=end);
 
-  let worked=0, normal=0, overtime=0, undertime=0;
+  let worked=0, normal=0, overtime=0, undertime=0, lunchWorkedTotal=0, expectedTotal=0;
   const byLocation = {Office:0, Remote:0, Site:0};
-  datesInRange.forEach(d=>{
+  const effectiveEnd = end > todayStr() ? todayStr() : end;
+  const allDates = effectiveEnd >= start ? allDatesInRange(start, effectiveEnd) : [];
+  allDates.forEach(d=>{
+    if(isNoInfoDay(d)) return; // day never captured — don't count it against Expected/Shortfall
     const stats = dayStats(d, grouped);
-    worked+=stats.worked; normal+=stats.normal; overtime+=stats.overtime; undertime+=stats.undertime;
-    grouped[d].forEach(s=>{ byLocation[s.location] = (byLocation[s.location]||0) + computeSessionWorked(s); });
+    worked+=stats.worked; normal+=stats.normal; overtime+=stats.overtime; undertime+=stats.undertime; lunchWorkedTotal+=stats.lunchWorked; expectedTotal+=stats.target;
+    if(grouped[d]) grouped[d].forEach(s=>{ byLocation[s.location] = (byLocation[s.location]||0) + computeSessionWorked(s); });
   });
+  const balance = worked - expectedTotal;
   const annualDays = leavesInRange.filter(l=>l.type==='annual').reduce((sum,l)=>sum+leaveDaysClipped(l,start,end),0);
   const sickDays = leavesInRange.filter(l=>l.type==='sick').reduce((sum,l)=>sum+leaveDaysClipped(l,start,end),0);
   const otherDays = leavesInRange.filter(l=>l.type==='other').reduce((sum,l)=>sum+leaveDaysClipped(l,start,end),0);
@@ -1053,14 +1541,18 @@ function renderStatsTab(){
       </div>
     ` : ''}
     <div class="stat-grid">
-      <div class="stat-box"><div class="label">Worked</div><div class="value">${fmtHours(worked)}h</div></div>
-      <div class="stat-box"><div class="label">Normal hours</div><div class="value normal">${fmtHours(normal)}h</div></div>
-      <div class="stat-box"><div class="label">Overtime</div><div class="value overtime">${fmtHours(overtime)}h</div></div>
-      <div class="stat-box"><div class="label">Shortfall</div><div class="value under">${fmtHours(undertime)}h</div></div>
+      <div class="stat-box"><div class="label">Total Hours Worked</div><div class="value">${fmtHours(worked)}</div></div>
+      <div class="stat-box"><div class="label">Expected Hours Worked</div><div class="value">${fmtHours(expectedTotal)}</div></div>
+      <div class="stat-box"><div class="label">Lunch Hours Worked Unpaid</div><div class="value" style="color:#D9B054;">${fmtHours(lunchWorkedTotal)}</div></div>
+      <div class="stat-box"><div class="label">Overtime Worked</div><div class="value overtime">${fmtHours(overtime)}</div></div>
+      <div class="stat-box"><div class="label">Hours Short Worked</div><div class="value under">${fmtHours(undertime)}</div></div>
+      <div class="stat-box"><div class="label">Balance</div><div class="value" style="color:${balance<0?'var(--under)':'var(--normal)'};">${fmtHours(balance)}</div></div>
     </div>
     ${renderCalendarSection()}
-    <div class="card"><div class="card-title">Worked vs. normal, overtime</div><div class="chart-wrap"><canvas id="chartBreakdown"></canvas></div></div>
+    <div class="card"><div class="card-title">Normal, Short Worked &amp; Overtime</div><div class="chart-wrap"><canvas id="chartBreakdown"></canvas></div></div>
     <div class="card"><div class="card-title">Hours by location</div><div class="chart-wrap" style="height:200px;"><canvas id="chartLocation"></canvas></div></div>
+    <div class="card"><div class="card-title">Average by Day of Week</div><div class="chart-wrap"><canvas id="chartWeekday"></canvas></div></div>
+    <div class="card"><div class="card-title">Overtime/Shortfall Trend (4-week rolling average)</div><div class="chart-wrap"><canvas id="chartTrend"></canvas></div></div>
     <div class="card">
       <div class="card-title">Leave taken</div>
       <div style="display:flex;gap:20px;">
@@ -1086,8 +1578,10 @@ function attachStatsCharts(){
       data:{
         labels: dates.map(d=> new Date(d+'T00:00:00').toLocaleDateString(undefined,{month:'short',day:'numeric'})),
         datasets:[
-          {label:'Normal', backgroundColor:'#5BA88F', data: dayData.map(x=>x.normal/60), stack:'a'},
-          {label:'Overtime', backgroundColor:'#D4753F', data: dayData.map(x=>x.overtime/60), stack:'a'}
+          {label:'Normal', backgroundColor:'#5087C7', data: dayData.map(x=>x.normal/60), stack:'a'},
+          {label:'Short Worked', backgroundColor:'#C4574F', data: dayData.map(x=>x.undertime/60), stack:'a'},
+          {label:'Lunch worked', backgroundColor:'#D9B054', data: dayData.map(x=>x.lunchWorked/60), stack:'a'},
+          {label:'Overtime', backgroundColor:'#5BA88F', data: dayData.map(x=>x.overtime/60), stack:'a'}
         ]
       },
       options:{ responsive:true, maintainAspectRatio:false,
@@ -1107,19 +1601,114 @@ function attachStatsCharts(){
       options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'right',labels:{color:'#E9ECF1'}}} }
     });
   }
+  const ctx3 = document.getElementById('chartWeekday');
+  if(ctx3){
+    const effectiveEnd3 = end > todayStr() ? todayStr() : end;
+    const sums = [0,0,0,0,0,0,0], counts = [0,0,0,0,0,0,0]; // Mon=0..Sun=6
+    if(effectiveEnd3>=start){
+      allDatesInRange(start, effectiveEnd3).forEach(d=>{
+        if(isNoInfoDay(d)) return;
+        const idx = (new Date(d+'T00:00:00').getDay()+6)%7;
+        sums[idx] += dayStats(d, grouped).worked;
+        counts[idx]++;
+      });
+    }
+    const averages = sums.map((s,i)=> counts[i]>0 ? s/counts[i] : 0);
+    let maxIdx = -1;
+    averages.forEach((v,i)=>{ if(counts[i]>0 && (maxIdx===-1 || v>averages[maxIdx])) maxIdx=i; });
+    if(chartRefs.weekday) chartRefs.weekday.destroy();
+    chartRefs.weekday = new Chart(ctx3, {
+      type:'bar',
+      data:{
+        labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+        datasets:[{label:'Avg hours', backgroundColor:'#5087C7', data: averages.map(m=>m/60)}]
+      },
+      options:{ responsive:true, maintainAspectRatio:false, layout:{padding:{top:22}},
+        scales:{ x:{ticks:{color:'#9BA4B5'},grid:{color:'#3A4150'}},
+                 y:{ticks:{color:'#9BA4B5'},grid:{color:'#3A4150'},title:{display:true,text:'avg hours',color:'#9BA4B5'}} },
+        plugins:{ legend:{display:false} } },
+      plugins:[{
+        id:'mostProductiveStar',
+        afterDatasetsDraw(chart){
+          if(maxIdx<0) return;
+          const bar = chart.getDatasetMeta(0).data[maxIdx];
+          if(!bar) return;
+          const ctx = chart.ctx;
+          ctx.save();
+          ctx.font = '18px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('\u2b50', bar.x, bar.y - 8);
+          ctx.restore();
+        }
+      }]
+    });
+  }
+  const ctx4 = document.getElementById('chartTrend');
+  if(ctx4){
+    const weeks = computeWeeklyBalances(16);
+    const rolling = computeRollingAverage(weeks, 4);
+    if(chartRefs.trend) chartRefs.trend.destroy();
+    chartRefs.trend = new Chart(ctx4, {
+      type:'line',
+      data:{
+        labels: weeks.map(w=> new Date(w.weekStart+'T00:00:00').toLocaleDateString(undefined,{month:'short',day:'numeric'})),
+        datasets:[
+          {label:'Weekly balance', data: weeks.map(w=>w.balance), borderColor:'#3A4150', backgroundColor:'transparent', borderWidth:1, pointRadius:2, tension:0.2},
+          {label:'4-week rolling avg', data: rolling.map(r=>r.avg), borderColor:'#5087C7', backgroundColor:'rgba(80,135,199,0.15)', borderWidth:2, pointRadius:0, tension:0.3, fill:true}
+        ]
+      },
+      options:{ responsive:true, maintainAspectRatio:false,
+        scales:{ x:{ticks:{color:'#9BA4B5',font:{size:9}},grid:{color:'#3A4150'}},
+                 y:{ticks:{color:'#9BA4B5'},grid:{color:'#3A4150'},title:{display:true,text:'hours (+ over, - under)',color:'#9BA4B5'}} },
+        plugins:{legend:{labels:{color:'#E9ECF1'}}} }
+    });
+  }
   const printBtn = document.getElementById('btnPrintReport');
   if(printBtn) printBtn.addEventListener('click', ()=>buildAndPrintReport(start,end));
+}
+// Net worked-vs-expected balance per week (Mon-start), for the trailing `numWeeks` weeks up to today.
+function computeWeeklyBalances(numWeeks){
+  const today = new Date(); today.setHours(0,0,0,0);
+  const dow = today.getDay();
+  const diffToMon = (dow===0? -6 : 1-dow);
+  const thisMonday = new Date(today); thisMonday.setDate(today.getDate()+diffToMon);
+  const weeks = [];
+  for(let i=numWeeks-1;i>=0;i--){
+    const weekStart = new Date(thisMonday); weekStart.setDate(thisMonday.getDate()-7*i);
+    const weekEnd = new Date(weekStart); weekEnd.setDate(weekStart.getDate()+6);
+    const startStr = isoDate(weekStart);
+    let endStr = isoDate(weekEnd);
+    if(endStr>todayStr()) endStr = todayStr();
+    let worked=0, expected=0;
+    if(endStr>=startStr){
+      allDatesInRange(startStr,endStr).forEach(d=>{
+        if(isNoInfoDay(d)) return;
+        const stats = dayStats(d);
+        worked+=stats.worked; expected+=stats.target;
+      });
+    }
+    weeks.push({weekStart:startStr, balance:(worked-expected)/60});
+  }
+  return weeks;
+}
+function computeRollingAverage(weeks, windowSize){
+  return weeks.map((w,i)=>{
+    const from = Math.max(0,i-windowSize+1);
+    const slice = weeks.slice(from,i+1);
+    const avg = slice.reduce((s,x)=>s+x.balance,0)/slice.length;
+    return {weekStart:w.weekStart, avg};
+  });
 }
 function buildAndPrintReport(start,end){
   const grouped = sessionsByDate();
   const dates = Object.keys(grouped).filter(d=>d>=start&&d<=end).sort();
   const leavesInRange = state.leaves.filter(l=>l.dateTo>=start&&l.dateFrom<=end).sort((a,b)=>a.dateFrom.localeCompare(b.dateFrom));
-  let worked=0, normal=0, overtime=0;
+  let worked=0, normal=0, overtime=0, lunchWorkedTotal=0;
   let rows = dates.map(d=>{
     const stats = dayStats(d, grouped);
-    worked+=stats.worked; normal+=stats.normal; overtime+=stats.overtime;
+    worked+=stats.worked; normal+=stats.normal; overtime+=stats.overtime; lunchWorkedTotal+=stats.lunchWorked;
     const sessTimes = grouped[d].map(s=>`${s.clockIn}-${s.clockOut}`).join(', ');
-    return `<tr><td>${niceDate(d)}</td><td>${sessTimes}</td><td>${fmtHours(stats.worked)}</td><td>${fmtHours(stats.normal)}</td><td>${fmtHours(stats.overtime)}</td></tr>`;
+    return `<tr><td>${niceDate(d)}</td><td>${sessTimes}</td><td>${fmtHours(stats.worked)}</td><td>${fmtHours(stats.normal)}</td><td>${fmtHours(stats.lunchWorked||0)}</td><td>${fmtHours(stats.overtime)}</td></tr>`;
   }).join('');
   let leaveRows = leavesInRange.map(l=>{
     const rangeLabel = l.dateFrom===l.dateTo ? niceDate(l.dateFrom) : `${niceDate(l.dateFrom)} - ${niceDate(l.dateTo)}`;
@@ -1129,9 +1718,9 @@ function buildAndPrintReport(start,end){
     <h1 style="font-family:sans-serif;">Work Hours Report</h1>
     <p>${niceDate(start)} &ndash; ${niceDate(end)}</p>
     <h3>Summary</h3>
-    <p>Worked: ${fmtHours(worked)}h &nbsp; Normal: ${fmtHours(normal)}h &nbsp; Overtime: ${fmtHours(overtime)}h</p>
+    <p>Worked: ${fmtHours(worked)} &nbsp; Normal: ${fmtHours(normal)} &nbsp; Lunch worked: ${fmtHours(lunchWorkedTotal)} &nbsp; Overtime: ${fmtHours(overtime)}</p>
     <h3>Days</h3>
-    <table><thead><tr><th>Date</th><th>Sessions</th><th>Worked (h)</th><th>Normal (h)</th><th>Overtime (h)</th></tr></thead><tbody>${rows}</tbody></table>
+    <table><thead><tr><th>Date</th><th>Sessions</th><th>Worked (h:mm)</th><th>Normal (h:mm)</th><th>Lunch worked (h:mm)</th><th>Overtime (h:mm)</th></tr></thead><tbody>${rows}</tbody></table>
     <h3>Leave</h3>
     <table><thead><tr><th>Date</th><th>Type</th><th>Comment</th></tr></thead><tbody>${leaveRows}</tbody></table>`;
   window.print();
@@ -1147,6 +1736,21 @@ function toast(msg){
 }
 
 // ================= events =================
+function attachMainDelegation(){
+  document.getElementById('main').addEventListener('click', ev=>{
+    const windowBtn = ev.target.closest('.edit-window-btn');
+    if(windowBtn){ ev.stopPropagation(); openDayWindowModal(windowBtn.dataset.date); return; }
+    const targetBtn = ev.target.closest('.edit-target-btn');
+    if(targetBtn){ ev.stopPropagation(); openDayTargetModal(targetBtn.dataset.date); return; }
+    const sessionEditBtn = ev.target.closest('.session-edit-btn');
+    if(sessionEditBtn){ ev.stopPropagation(); openSessionModal(sessionEditBtn.dataset.sessionId); return; }
+    const sessionRow = ev.target.closest('.entry-row[data-session-id]');
+    if(sessionRow){ openSessionModal(sessionRow.dataset.sessionId); return; }
+    const leaveRow = ev.target.closest('.entry-row[data-leave-id]');
+    if(leaveRow){ openLeaveModal(leaveRow.dataset.leaveId); return; }
+  });
+}
+
 function attachTabEvents(){
   const swLocSeg = document.getElementById('sw_loc_seg');
   if(swLocSeg) swLocSeg.addEventListener('click', ev=>{
@@ -1170,18 +1774,9 @@ function attachTabEvents(){
 
   const manualBtn = document.getElementById('btnManualEntry');
   if(manualBtn) manualBtn.addEventListener('click', ()=>openSessionModal(null));
-  document.querySelectorAll('.entry-row[data-session-id]').forEach(row=>{
-    row.addEventListener('click', ()=> openSessionModal(row.dataset.sessionId));
-  });
-  document.querySelectorAll('.edit-target-btn').forEach(btn=>{
-    btn.addEventListener('click', ev=>{ ev.stopPropagation(); openDayTargetModal(btn.dataset.date); });
-  });
 
   const newLeaveBtn = document.getElementById('btnNewLeave');
   if(newLeaveBtn) newLeaveBtn.addEventListener('click', ()=>openLeaveModal(null));
-  document.querySelectorAll('.entry-row[data-leave-id]').forEach(row=>{
-    row.addEventListener('click', ()=> openLeaveModal(row.dataset.leaveId));
-  });
 
   document.querySelectorAll('.period-picker button').forEach(btn=>{
     btn.addEventListener('click', ()=>{
@@ -1203,9 +1798,53 @@ document.getElementById('modalOverlay').addEventListener('click', ev=>{ if(ev.ta
 document.getElementById('tabs').addEventListener('click', ev=>{ const btn = ev.target.closest('button'); if(!btn) return; setTab(btn.dataset.tab); });
 
 // ================= init =================
+// If the app is opened (or left running) and the active session's date is
+// no longer today, you were still clocked in overnight — forgot to clock
+// out. Rather than a fragile exact-midnight timer, we just detect this
+// whenever the app is used and split the session at the day boundary:
+// yesterday's portion gets finalized (ending 23:59), and a fresh session
+// starts for today. Both are left for you to correct with the real times.
+function checkMidnightRollover(){
+  const a = state.activeSession;
+  if(!a || a.date===todayStr()) return;
+
+  const dayEndTs = new Date(a.date+'T23:59:00').getTime();
+  let finishedBreaks = (a.breaks||[]).slice();
+  if(a.openBreak){
+    finishedBreaks.push({type:a.openBreak.type, startTs:a.openBreak.startTs, endTs:dayEndTs});
+  }
+
+  const session = {
+    id: a.id,
+    date: a.date,
+    location: a.location,
+    clockIn: hhmmFromTs(a.startTs),
+    clockOut: '23:59',
+    breaks: finishedBreaks.map(b=>({type:b.type, start:hhmmFromTs(b.startTs), end:hhmmFromTs(b.endTs)})),
+    notes: 'Auto-split at midnight — check/correct the actual end time.'
+  };
+  state.sessions.push(session);
+
+  const todayMidnight = new Date(); todayMidnight.setHours(0,0,0,0);
+  state.activeSession = {
+    id: uid(),
+    date: todayStr(),
+    location: a.location,
+    startTs: todayMidnight.getTime(),
+    breaks: [],
+    openBreak: a.openBreak ? {type:a.openBreak.type, startTs: todayMidnight.getTime()} : null
+  };
+
+  saveSessions();
+  saveActiveSession();
+  toast('Still clocked in from yesterday — split into two entries to fix');
+}
+
 (async function init(){
   renderTodayChip();
+  attachMainDelegation();
   await loadAll();
+  checkMidnightRollover();
   setTab('log');
 })();
 </script>
